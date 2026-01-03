@@ -30,13 +30,23 @@ class DataFetcher:
         """Fetch BIST 100 data from Yahoo Finance"""
         print("Fetching BIST 100 data...")
         bist = yf.download('XU100.IS', start=self.start_date, end=self.end_date, progress=False)
-        return bist['Adj Close']
+        # Eğer MultiIndex ise düzelt
+        if isinstance(bist.columns, pd.MultiIndex):
+            bist = bist['Adj Close'].iloc[:, 0] if 'Adj Close' in bist.columns.get_level_values(0) else bist['Close'].iloc[:, 0]
+        else:
+            bist = bist['Adj Close'] if 'Adj Close' in bist.columns else bist['Close']
+        return bist
     
     def fetch_usdtry(self):
         """Fetch USD/TRY exchange rate from Yahoo Finance"""
         print("Fetching USD/TRY data...")
         usdtry = yf.download('USDTRY=X', start=self.start_date, end=self.end_date, progress=False)
-        return usdtry['Adj Close']
+        # Eğer MultiIndex ise düzelt
+        if isinstance(usdtry.columns, pd.MultiIndex):
+            usdtry = usdtry['Adj Close'].iloc[:, 0] if 'Adj Close' in usdtry.columns.get_level_values(0) else usdtry['Close'].iloc[:, 0]
+        else:
+            usdtry = usdtry['Adj Close'] if 'Adj Close' in usdtry.columns else usdtry['Close']
+        return usdtry
     
     def fetch_us_cpi(self):
         """Fetch US CPI data from FRED API"""
