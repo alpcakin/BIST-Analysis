@@ -89,7 +89,14 @@ class DataFetcher:
     
     def save_data(self, df, filename='bist_analysis_data.csv'):
         """Save DataFrame to CSV"""
-        filepath = os.path.join('data', filename)
+        # Get project root directory (parent of src)
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        data_dir = os.path.join(project_root, 'data')
+
+        # Create data directory if it doesn't exist
+        os.makedirs(data_dir, exist_ok=True)
+
+        filepath = os.path.join(data_dir, filename)
         df.to_csv(filepath)
         print(f"Data saved to {filepath}")
 
